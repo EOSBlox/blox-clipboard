@@ -22,7 +22,7 @@ class BloxClipboard extends PolymerElement {
     return {
       text: {
         type: String,
-        observer: '_copyTextToClipboard',
+        observer: '_copyToClipboard',
       },
     };
   }
@@ -34,29 +34,16 @@ class BloxClipboard extends PolymerElement {
     document.body.appendChild(textArea);
     textArea.focus();
     textArea.select();
-  
-    try {
-      var successful = document.execCommand('copy');
-      var msg = successful ? 'successful' : 'unsuccessful';
-      console.log('Fallback: Copying text command was ' + msg);
-    } catch (err) {
-      console.error('Fallback: Oops, unable to copy', err);
-    }
-  
+    document.execCommand('copy');
     document.body.removeChild(textArea);
   }
 
-  _copyTextToClipboard() {
+  _copyToClipboard() {
     if (!navigator.clipboard) {
-      fallbackCopyTextToClipboard(this.text);
+      this._fallbackCopyTextToClipboard(this.text);
       return;
     }
-    navigator.clipboard.writeText(this.text)
-    .then(function() {
-      console.log('Copying to clipboard was successful!');
-    }, function(err) {
-      console.error('Could not copy text: ', err);
-    });
+    navigator.clipboard.writeText(this.text);
   }
 
 } window.customElements.define('blox-clipboard', BloxClipboard);
