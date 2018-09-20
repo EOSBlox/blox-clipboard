@@ -29,14 +29,25 @@ class BloxClipboard extends PolymerElement {
 
 
   _fallbackCopyTextToClipboard() {
-    var textArea = document.createElement("textarea");
-    textArea.value = this.text;
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textArea);
-  }
+        var textArea = document.createElement("textarea");
+        textArea.value = this.txt;
+        document.body.appendChild(textArea);
+        if (navigator.userAgent.match(/ipad|iphone/i)) {
+            console.log('isIOS')
+            let range = document.createRange();
+            range.selectNodeContents(textArea);
+            let selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            textArea.setSelectionRange(0, 999999);
+        } else {
+            console.log('isNOT-IOS')
+            textArea.focus();
+            textArea.select();
+        }
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+    }
 
   _copyToClipboard() {
     if (!navigator.clipboard) {
